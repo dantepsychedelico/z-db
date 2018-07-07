@@ -1,5 +1,5 @@
 {
-  "name": "zdb",
+  "name": "zdbc",
   "description": "A Sql Orm tools",
   "version": "0.0.1",
   "main": "index.js",
