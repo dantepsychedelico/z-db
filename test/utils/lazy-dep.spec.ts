@@ -28,7 +28,7 @@ describe('test LazyDep', () => {
         .register('aa', [], () => 'AA');
     });
     it('test register aa, bb', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         ld
         .register('aa', [], () => 'AA')
         .register('bb', [], () => 'BB')
@@ -40,7 +40,7 @@ describe('test LazyDep', () => {
         });
     });
     it('test resolve aa, bb before register aa, bb', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         ld
         .resolve(['bb', 'aa'], (bb, aa) => {
             aa.should.be.eql('AA');
@@ -52,7 +52,7 @@ describe('test LazyDep', () => {
         .register('bb', [], () => 'BB');
     });
     it('test resolve aa, bb before register aa', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         ld
         .register('bb', [], () => 'BB')
         .resolve(['bb', 'aa'], (bb, aa) => {
@@ -64,7 +64,7 @@ describe('test LazyDep', () => {
         .register('aa', [], () => 'AA');
     });
     it('test register bb dependency aa', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         ld
         .register('bb', ['aa'], (aa) => `${aa}BB`)
         .resolve(['bb', 'aa'], (bb, aa) => {
@@ -76,7 +76,7 @@ describe('test LazyDep', () => {
         .register('aa', [], () => 'AA');
     });
     it('test callback once for aa, bb', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         let a0 = 0, b0 = 0, c0 = 0;
         ld
         .register('bb', ['aa'], (aa) => {
@@ -99,7 +99,7 @@ describe('test LazyDep', () => {
         });
     });
     it('test register cc dependency aa, bb', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         ld
         .resolve(['cc', 'aa'], (cc, aa) => {
             cc.should.be.eql('AABBCCAA');
@@ -112,7 +112,7 @@ describe('test LazyDep', () => {
         .register('aa', [], () => 'AA');
     });
     it('throw error for register twice', (done) => {
-        let ld = new LazyDep();
+        let ld = new LazyDep<string>();
         (() => ld
         .register('aa', [], () => 'AA')
         .register('aa', [], () => 'AA'))
