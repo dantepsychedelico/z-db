@@ -1,0 +1,16 @@
+{ 
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "commonjs",
+        "lib": [ 
+            "es2015", "es6"
+        ],
+        "outDir": "./lib",
+        "noImplicitAny": true,
+        "sourceMap": true
+    }
+}
