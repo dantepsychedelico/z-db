@@ -1,7 +1,4 @@
 { 
-    "include": [
-        "src/**/*.ts"
-    ],
     "compileOnSave": true,
     "compilerOptions": {
         "declaration": true,

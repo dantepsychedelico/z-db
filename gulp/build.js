@@ -11,7 +11,7 @@ gulp.task('clean', function() {
 
 gulp.task('build', ['clean'], function () {
     let tsProj = $.typescript.createProject('tsconfig.json');
-    return tsProj.src()
+    return gulp.src('./src/**/*.ts')
         .pipe(tsProj())
         .js
         .pipe(gulp.dest(tsProj.options.outDir))

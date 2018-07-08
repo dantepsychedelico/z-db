@@ -9,14 +9,14 @@ let should = chai.should();
 
 describe('test connection', () => {
     it('postgres', () => {
-        let zdb = new Zdb({ database: DB_TYPE.postgres })
+        let zdb = new Zdb({ dbType: DB_TYPE.postgres })
         return zdb.connect()
             .then((db) => {
                 return db.close();
             });
     });
     it('mssql', () => {
-        let zdb = new Zdb({ database: DB_TYPE.mssql })
+        let zdb = new Zdb({ dbType: DB_TYPE.mssql })
         return zdb.connect()
             .then((db) => {
                 return db.close();

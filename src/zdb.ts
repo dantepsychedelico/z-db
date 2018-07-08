@@ -6,7 +6,7 @@ export class Zdb {
     constructor(
         private _config: DbConfig
     ) {
-        if (_config.database === DB_TYPE.postgres) { // bad setting(dynamic type return)
+        if (_config.dbType === DB_TYPE.postgres) { // bad setting(dynamic type return)
         }
     }
 };
