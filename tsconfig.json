@@ -11,7 +11,8 @@
             "es2015", "es6"
         ],
         "outDir": "./lib",
-        "noImplicitAny": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "sourceMap": true
     }
 }
