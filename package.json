@@ -1,10 +1,15 @@
 {
-  "name": "zdbc",
+  "name": "node-zdb",
   "description": "A Sql Orm tools",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha"
+    "test": "node_modules/.bin/mocha",
+    "build": "node_modules/.bin/gulp build"
+  },
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:dantepsychedelico/zdb.git"
   },
   "engines": {
     "node": ">=6"
@@ -21,6 +26,7 @@
     "@types/lodash": "^4.14.110",
     "@types/mocha": "^5.2.4",
     "@types/node": "^10.5.2",
+    "@types/oracledb": "^1.11.34",
     "@types/pg": "^7.4.10",
     "@types/sqlite3": "^3.1.3",
     "chai": "^4.1.2",

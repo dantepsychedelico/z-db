@@ -4,6 +4,7 @@
     ],
     "compileOnSave": true,
     "compilerOptions": {
+        "declaration": true,
         "target": "es2015",
         "module": "commonjs",
         "lib": [ 
