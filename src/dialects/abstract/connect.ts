@@ -7,7 +7,7 @@ const enum DbType {
     postgres
 }
 
-export interface DbConfig<T> {
+export interface DbConfig {
     readonly dbType: Symbol;
     debug?: boolean;
 }
@@ -20,21 +20,15 @@ export interface DbResult {
     rows: DbRow[];
 }
 
-export abstract class DbClient<T> {
+export abstract class DbClient<T extends DbClient<any, any>, P extends DbConfig> {
     constructor(
-        private _config: DbConfig<T>
+        readonly _config: P
     ) {}
-    connect(): BPromise<DbInstance<T>> {
+    connect(): BPromise<T> {
         return this._connect();
     }
-    abstract _connect(): BPromise<DbInstance<T>>;
+    abstract _connect(): BPromise<T>;
     abstract _driver(): void;
-}
-
-export abstract class DbInstance<T extends DbInstance<any>> {
-    constructor(
-        private _config: DbConfig
-    ) {}
     abstract query(sql: string, params: any[], options?: any): BPromise<DbResult>;
     close(): BPromise<T> {
         return this._close();

@@ -1,7 +1,7 @@
 
 import { injectable, inject } from 'inversify';
 import * as BPromise from 'bluebird';
-import { DbClient, DbConfig, DbInstance, DbResult } from '../abstract';
+import { DbClient, DbConfig, DbResult } from '../abstract';
 import { DB_TYPE } from '../../utils';
 
 const enum DbType {
@@ -15,30 +15,19 @@ export class PgDbConfig implements DbConfig {
     ) {}
 }
 
-export class PgDbClient extends DbClient<DbType.postgres> {
-    private _config: PgDbConfig;
+export class PgDbClient extends DbClient<PgDbClient, PgDbConfig> {
     constructor(
-        _config: PgDbConfig
+        readonly _config: PgDbConfig
     ) {
         super(_config);
-        this._config = _config;
     }
-    _connect(): BPromise<PgDbInstance> {
-        let db = new PgDbInstance(this._config);
-        return BPromise.resolve(db);
+    _connect(): BPromise<PgDbClient> {
+        return BPromise.resolve(this);
     }
     _driver() {
 //         import("pg")
 //             .then((Pg) => {
 //             });
-    }
-}
-
-export class PgDbInstance extends DbInstance<PgDbInstance> {
-    constructor(
-        private _config: PgDbConfig
-    ) {
-        super(_config);
     }
     query(sql: string, params: any[], options?: any) {
         return BPromise.resolve({ rows: [] });
