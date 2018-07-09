@@ -4,7 +4,7 @@ import { DB_TYPE } from '../../utils';
 import * as Bb from 'bluebird';
 
 export interface DbConfig {
-    readonly dbType: DB_TYPE;
+    readonly dbType: Symbol;
     debug?: boolean;
 }
 

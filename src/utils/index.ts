@@ -1,13 +1,13 @@
 
 import { LazyDep } from './lazy-dep';
 
-export const enum DB_TYPE {
-        postgres = 1,
-        sqlite = 2,
-        oracledb = 3,
-        mssql = 4,
-        mongo = 5,
-        cassandra = 6
-}
+export const DB_TYPE = {
+    postgres: Symbol.for('postgres'),
+    sqlite: Symbol.for('sqlite'),
+    oracledb: Symbol.for('oracledb'),
+    mssql: Symbol.for('mssql'),
+    mongo: Symbol.for('mongo'),
+    cassandra: Symbol.for('cassandra'),
+};
 
 export { LazyDep };
