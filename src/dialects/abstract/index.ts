@@ -1,4 +1,4 @@
 
-import { DbClient, DbConfig } from './connect';
+import { DbClient, DbConfig, DbInstance, DbResult } from './connect';
 
-export { DbClient, DbConfig }
+export { DbClient, DbConfig, DbInstance, DbResult }

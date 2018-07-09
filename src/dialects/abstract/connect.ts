@@ -1,9 +1,13 @@
 
 
 import { DB_TYPE } from '../../utils';
-import * as Bb from 'bluebird';
+import * as BPromise from 'bluebird';
 
-export interface DbConfig {
+const enum DbType {
+    postgres
+}
+
+export interface DbConfig<T> {
     readonly dbType: Symbol;
     debug?: boolean;
 }
@@ -16,37 +20,37 @@ export interface DbResult {
     rows: DbRow[];
 }
 
-export abstract class DbClient {
+export abstract class DbClient<T> {
     constructor(
-        private _config: DbConfig
+        private _config: DbConfig<T>
     ) {}
-    connect(): Bb<DbInstance> {
+    connect(): BPromise<DbInstance<T>> {
         return this._connect();
     }
-    abstract _connect(): Bb<DbInstance>;
+    abstract _connect(): BPromise<DbInstance<T>>;
     abstract _driver(): void;
 }
 
-export abstract class DbInstance {
+export abstract class DbInstance<T extends DbInstance<any>> {
     constructor(
         private _config: DbConfig
     ) {}
-    abstract query(sql: string, params: any[], options?: any): Bb<DbResult>;
-    close(): Bb<DbInstance> {
+    abstract query(sql: string, params: any[], options?: any): BPromise<DbResult>;
+    close(): BPromise<T> {
         return this._close();
     }
-    abstract _close(): Bb<DbInstance>;
-    begin(): Bb<DbResult> {
+    abstract _close(): BPromise<T>;
+    begin(): BPromise<DbResult> {
         return this._begin();
     }
-    abstract _begin(): Bb<DbResult>;
-    commit(): Bb<DbInstance> {
+    abstract _begin(): BPromise<DbResult>;
+    commit(): BPromise<T> {
         return this._commit();
     }
-    abstract _commit(): Bb<DbInstance>;
-    rollback(): Bb<DbInstance> {
+    abstract _commit(): BPromise<T>;
+    rollback(): BPromise<T> {
         return this._rollback();
     }
-    abstract _rollback(): Bb<DbInstance>;
+    abstract _rollback(): BPromise<T>;
 }
 
