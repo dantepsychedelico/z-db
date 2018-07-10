@@ -2,19 +2,18 @@
 import { DbConfig, DbClient, PgDbClient, IPgDbConfig } from './dialects';
 import { DB_TYPE } from './utils';
 import * as BPromise from 'bluebird';
-import { Container } from 'inversify';
 
-const container = new Container();
 
-export class Zdb<T extends DbClient<T>> {
+export class Zdb<TDbClient extends DbClient<TDbClient>, TDbConfig extends DbConfig> {
+    readonly client: TDbClient;
     constructor(
+        private dbClient: new (_config: TDbConfig) => TDbClient,
+        private _config: TDbConfig
     ) {
-//         container.bind<PgDbClient>(DB_TYPE.postgres).to(PgDbClient);
+        this.client = new dbClient(_config);
     }
-    connect(): BPromise<any> {
-        return BPromise.resolve();
-//         return BPromise<T>
-//         return this.client.connect();
+    connect(): BPromise<TDbClient> {
+        return BPromise.resolve(this.client);
     }
 };
 
