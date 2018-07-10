@@ -3,10 +3,6 @@
 import { DB_TYPE } from '../../utils';
 import * as BPromise from 'bluebird';
 
-const enum DbType {
-    postgres
-}
-
 export interface DbConfig {
     readonly dbType: Symbol;
     debug?: boolean;

@@ -4,10 +4,6 @@ import * as BPromise from 'bluebird';
 import { DbClient, DbConfig, DbResult } from '../abstract';
 import { DB_TYPE } from '../../utils';
 
-const enum DbType {
-    postgres
-}
-
 export class PgDbConfig implements DbConfig {
     dbType: Symbol = DB_TYPE.postgres;
     constructor(
