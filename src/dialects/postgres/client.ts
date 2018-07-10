@@ -4,16 +4,36 @@ import * as BPromise from 'bluebird';
 import { DbClient, DbConfig, DbResult } from '../abstract';
 import { DB_TYPE } from '../../utils';
 
-export class PgDbConfig implements DbConfig {
-    dbType: Symbol = DB_TYPE.postgres;
-    constructor(
-        private _config: DbConfig
-    ) {}
+export interface IPgDbConfig extends DbConfig {
+    readonly host: string;
+    readonly port: number;
+    readonly user: string;
+    readonly password: string;
+    readonly database: string;
+    debug: boolean;
 }
 
-export class PgDbClient extends DbClient<PgDbClient, PgDbConfig> {
+// export class PgDbConfig implements IPgDbConfig {
+//     readonly host: string;
+//     readonly port: number;
+//     readonly user: string;
+//     readonly password: string;
+//     readonly database: string;
+//     debug: boolean;
+//     constructor(_config: {
+//         host?: string,
+//         port?: number,
+//         user?: string,
+//         password?: string,
+//         database?: string,
+//         debug?: string
+//     }){
+//     }
+// }
+
+export class PgDbClient extends DbClient<PgDbClient> {
     constructor(
-        readonly _config: PgDbConfig
+        readonly _config: IPgDbConfig
     ) {
         super(_config);
     }
@@ -22,7 +42,7 @@ export class PgDbClient extends DbClient<PgDbClient, PgDbConfig> {
     }
     _driver() {
 //         import("pg")
-//             .then((Pg) => {
+//             .then((pg) => {
 //             });
     }
     query(sql: string, params: any[], options?: any) {

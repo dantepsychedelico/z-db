@@ -4,8 +4,7 @@ import { DB_TYPE } from '../../utils';
 import * as BPromise from 'bluebird';
 
 export interface DbConfig {
-    readonly dbType: Symbol;
-    debug?: boolean;
+    debug: boolean;
 }
 
 export type DbRow = {
@@ -16,9 +15,9 @@ export interface DbResult {
     rows: DbRow[];
 }
 
-export abstract class DbClient<T extends DbClient<any, any>, P extends DbConfig> {
+export abstract class DbClient<T extends DbClient<any>> {
     constructor(
-        readonly _config: P
+        readonly _config: DbConfig
     ) {}
     connect(): BPromise<T> {
         return this._connect();

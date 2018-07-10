@@ -1,3 +1,3 @@
 
-import { PgDbClient, PgDbConfig } from './client';
-export { PgDbClient, PgDbConfig };
+import { PgDbClient, IPgDbConfig } from './client';
+export { PgDbClient, IPgDbConfig };
