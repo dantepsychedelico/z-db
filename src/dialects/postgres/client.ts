@@ -1,63 +1,65 @@
 
-import { injectable, inject } from 'inversify';
 import * as BPromise from 'bluebird';
-import { DbClient, DbConfig, DbResult } from '../abstract';
+import { DbClient, DbConfig, DbResult, IQryParamObj, IQryOpt } from '../abstract';
 import { DB_TYPE } from '../../utils';
+import { PoolConfig, Pool, PoolClient } from 'pg';
+import * as _ from 'lodash';
 
-export interface IPgDbConfig extends DbConfig {
-    readonly host: string;
-    readonly port: number;
-    readonly user: string;
-    readonly password: string;
-    readonly database: string;
-    debug: boolean;
+export class PgDbConfig implements DbConfig {
+    dbType: Symbol = DB_TYPE.postgres;
+    debug?: boolean = false;
+    constructor(public config: PoolConfig) {}
 }
 
-// export class PgDbConfig implements IPgDbConfig {
-//     readonly host: string;
-//     readonly port: number;
-//     readonly user: string;
-//     readonly password: string;
-//     readonly database: string;
-//     debug: boolean;
-//     constructor(_config: {
-//         host?: string,
-//         port?: number,
-//         user?: string,
-//         password?: string,
-//         database?: string,
-//         debug?: string
-//     }){
-//     }
-// }
-
-export class PgDbClient extends DbClient<PgDbClient> {
+export class PgDbClient extends DbClient {
+    private client: PoolClient;
+    private pool: Pool;
     constructor(
-        readonly _config: IPgDbConfig
+        readonly _config: PgDbConfig
     ) {
         super(_config);
     }
-    _connect(): BPromise<PgDbClient> {
-        return BPromise.resolve(this);
+    private transpostSql(sql: string, params: IQryParamObj = {}): { sql: string, params: any[] } {
+        let p = [];
+        let keys = [...Object.keys(params), '[\\w]+'];
+        let re = new RegExp('\\$('+keys.join('|')+')(?=[,): \n\r]|$)', 'g');
+        sql = sql.replace(re, function(m, key) {
+            if (key in params) {
+                p.push(params[key]);
+            } else {
+                p.push(null);
+            }
+            return '$'+p.length;
+        });
+        return { sql, params: p };
     }
-    _driver() {
-//         import("pg")
-//             .then((pg) => {
-//             });
+    _connect() {
+        this.pool = new Pool(this._config.config);
+        return BPromise.resolve(this.pool.connect())
+            .then((client) => {
+                this.client = client;
+                return this;
+            });
     }
-    query(sql: string, params: any[], options?: any) {
-        return BPromise.resolve({ rows: [] });
+    _query(sql: string, params: IQryParamObj): BPromise<DbResult> {
+        let tSql = this.transpostSql(sql, params);
+        return BPromise.resolve(
+            this.client.query(tSql.sql, tSql.params)
+        );
     }
     _close() {
-        return BPromise.resolve(this);
+        return BPromise.resolve(this.client.release())
+            .then(() => this);
     }
     _begin() {
-        return BPromise.resolve({ rows: [] });
+        return this.query('BEGIN');
     }
     _commit() {
-        return BPromise.resolve(this);
+        return this.query('COMMIT')
+            .then(() => this);
     }
     _rollback() {
-        return BPromise.resolve(this);
+        return this.query('ROLLBACK')
+            .then(() => this);
     }
 }

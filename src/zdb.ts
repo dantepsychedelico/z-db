@@ -1,20 +1,22 @@
 
-import { DbConfig, DbClient, PgDbClient, IPgDbConfig } from './dialects';
+import { 
+    DbConfig, DbClient, 
+    PgDbClient, PgDbConfig, 
+    SqliteDbClient, SqliteDbConfig 
+} from './dialects';
 import { DB_TYPE } from './utils';
 import * as BPromise from 'bluebird';
 
 
-export class Zdb<TDbClient extends DbClient<TDbClient>, TDbConfig extends DbConfig> {
-    readonly client: TDbClient;
+export class Zdb<TDbClient extends DbClient, TDbConfig extends DbConfig> {
     constructor(
-        private dbClient: new (_config: TDbConfig) => TDbClient,
+        private _Client: new (_config: TDbConfig) => TDbClient,
         private _config: TDbConfig
-    ) {
-        this.client = new dbClient(_config);
-    }
+    ) {}
     connect(): BPromise<TDbClient> {
-        return BPromise.resolve(this.client);
+        let client = new this._Client(this._config);
+        return client.connect();
     }
 };
 
-export { DB_TYPE, PgDbClient, IPgDbConfig };
+export { DB_TYPE, DbClient, DbConfig, PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig };
