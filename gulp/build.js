@@ -2,11 +2,12 @@
 
 let gulp = require('gulp'),
     del = require('del'),
-    $ = require('gulp-load-plugins')();
+    $ = require('gulp-load-plugins')(),
+    outDir = './lib';
 
 gulp.task('clean', function() {
     let tsProj = $.typescript.createProject('tsconfig.json');
-    return del(tsProj.options.outDir);
+    return del(outDir);
 });
 
 gulp.task('build', ['clean'], function () {
@@ -14,5 +15,5 @@ gulp.task('build', ['clean'], function () {
     return gulp.src('./src/**/*.ts')
         .pipe(tsProj())
         .js
-        .pipe(gulp.dest(tsProj.options.outDir))
+        .pipe(gulp.dest(outDir))
 });
