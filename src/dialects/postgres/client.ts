@@ -1,6 +1,6 @@
 
 import * as BPromise from 'bluebird';
-import { DbClient, DbConfig, DbResult, IQryParamObj, IQryOpt } from '../abstract';
+import { DbBase, DbConfig, DbResult, IQryParamObj, IQryOpt } from '../abstract';
 import { DB_TYPE } from '../../utils';
 import { PoolConfig, Pool, PoolClient } from 'pg';
 import * as _ from 'lodash';
@@ -11,11 +11,11 @@ export class PgDbConfig implements DbConfig {
     constructor(public config: PoolConfig) {}
 }
 
-export class PgDbClient extends DbClient {
+export class PgDbClient extends DbBase {
     private client: PoolClient;
     private pool: Pool;
     constructor(
-        readonly _config: PgDbConfig
+        protected readonly _config: PgDbConfig
     ) {
         super(_config);
     }

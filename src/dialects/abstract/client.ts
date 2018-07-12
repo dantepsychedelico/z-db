@@ -1,5 +1,4 @@
 
-
 import { DB_TYPE } from '../../utils';
 import * as BPromise from 'bluebird';
 
@@ -8,8 +7,8 @@ export interface DbConfig {
     debug?: boolean;
 }
 
-export type DbRow = {
-    [propName: string]: any
+export interface DbRow {
+    [name: string]: any
 }
 
 export interface DbResult {
@@ -24,11 +23,11 @@ export interface IQryOpt {
     debug: boolean;
 }
 
-export abstract class DbClient {
+export abstract class DbBase {
     private _isConnected: boolean;
     private _isBegined: boolean;
     constructor(
-        readonly _config: DbConfig
+        protected readonly _config: DbConfig
     ) {
         this._isConnected = false;
         this._isBegined = false;

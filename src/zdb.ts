@@ -1,6 +1,6 @@
 
 import { 
-    DbConfig, DbClient, 
+    DbConfig, DbBase, 
     PgDbClient, PgDbConfig, 
     SqliteDbClient, SqliteDbConfig 
 } from './dialects';
@@ -8,7 +8,7 @@ import { DB_TYPE } from './utils';
 import * as BPromise from 'bluebird';
 
 
-export class Zdb<TDbClient extends DbClient, TDbConfig extends DbConfig> {
+export class Zdb<TDbClient extends DbBase, TDbConfig extends DbConfig> {
     constructor(
         private _Client: new (_config: TDbConfig) => TDbClient,
         private _config: TDbConfig
@@ -19,4 +19,4 @@ export class Zdb<TDbClient extends DbClient, TDbConfig extends DbConfig> {
     }
 };
 
-export { DB_TYPE, DbClient, DbConfig, PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig };
+export { DB_TYPE, DbBase, DbConfig, PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig };

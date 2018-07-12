@@ -1,6 +1,6 @@
 
 import * as BPromise from 'bluebird';
-import { DbClient, DbConfig, DbResult } from '../abstract';
+import { DbBase, DbConfig, DbResult } from '../abstract';
 import { DB_TYPE } from '../../utils';
 import * as _ from 'lodash';
 
@@ -13,9 +13,9 @@ export class SqliteDbConfig implements DbConfig {
     constructor(public config: ISqliteDbConfig) {}
 }
 
-export class SqliteDbClient extends DbClient {
+export class SqliteDbClient extends DbBase {
     constructor(
-        readonly _config: SqliteDbConfig
+        protected readonly _config: SqliteDbConfig
     ) {
         super(_config);
     }
