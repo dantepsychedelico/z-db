@@ -15,10 +15,12 @@
     "node": ">=6"
   },
   "dependencies": {
+    "@types/pluralize": "0.0.28",
     "bluebird": "^3.5.1",
     "chalk": "^2.4.1",
     "inversify": "^4.13.0",
     "lodash": "^4.17.10",
+    "pluralize": "^7.0.0",
     "reflect-metadata": "^0.1.12"
   },
   "devDependencies": {

@@ -1,7 +1,9 @@
 'use strict';
-/* process unit test */
+/* connection test */
 
-import { Zdb, DB_TYPE, PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig } from '../src/zdb';
+import { PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig } from '../src/dialects';
+import { Zdb } from '../src/zdb';
+import { DB_TYPE } from '../src/utils';
 import * as chai from 'chai';
 import * as _ from 'lodash';
 

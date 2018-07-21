@@ -1,10 +1,12 @@
 
+import "reflect-metadata";
 import { 
     DbConfig, DbBase, 
     PgDbClient, PgDbConfig, 
     SqliteDbClient, SqliteDbConfig 
 } from './dialects';
 import { DB_TYPE } from './utils';
+import { Space, table } from './schema';
 import * as BPromise from 'bluebird';
 
 
@@ -18,5 +20,3 @@ export class Zdb<TDbClient extends DbBase, TDbConfig extends DbConfig> {
         return client.connect();
     }
 };
-
-export { DB_TYPE, DbBase, DbConfig, PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig };

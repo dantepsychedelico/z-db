@@ -10,4 +10,10 @@ export const DB_TYPE = {
     cassandra: Symbol.for('cassandra'),
 };
 
+export function nonEnum(target: any, key: string) {
+    Object.defineProperty(target, key, {
+        enumerable: false
+    });
+}
+
 export { LazyDep };
