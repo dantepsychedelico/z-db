@@ -2,29 +2,32 @@
 /* model test */
 
 import { Model, Cst, Elem, Space, CTYPE, table, col, pkey } from '../src/schema';
-import { } from '../src/utils';
-import * as chai from 'chai';
 import * as _ from 'lodash';
-
-let should = chai.should();
 
 let space = 'test-model';
 let mm = new Space(space);
 describe('test model', () => {
+    let elemDefPrivated = {
+        __hasDefault: false,
+        __isPkey: false,
+        __isNotNull: false,
+        __isSingleUniq: false
+    };
     it('create elem', () => {
         let foo = new Model('foo');
         let fooIdElem = new Elem(foo, {
             name: 'id',
             type: { js: 'uuid' }
         });
-        return fooIdElem
-            .should.be.eql({
-                model: foo,
-                tname: 'foo',
-                name: 'id',
-                type: { js: 'uuid' },
-                csts: []
-            });
+        fooIdElem
+        .should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'uuid' },
+            csts: [],
+            ...elemDefPrivated,
+        });
     });
     it('create elem with foriegn parent key', () => {
         let foo = new Model('foo');
@@ -46,7 +49,8 @@ describe('test model', () => {
                 name: 'foo_id',
                 type: { js: 'uuid' },
                 felem: fooIdElem,
-                csts: []
+                csts: [],
+                ...elemDefPrivated,
             });
     });
     it('create elem with foriegn child key', () => {
@@ -81,10 +85,11 @@ describe('test model', () => {
                 type: { js: 'text' },
                 pelem: gooFooIdElem,
                 felem: fooNoElem,
-                csts: []
+                csts: [],
+                ...elemDefPrivated,
             });
     });
-    it('create cst with primary key', () => {
+    it('create Cst with primary key', () => {
         let foo = new Model('foo');
         let fooIdElem = new Elem(foo, {
             name: 'id',
@@ -97,22 +102,218 @@ describe('test model', () => {
             type: CTYPE.PKEY,
             elems: [fooIdElem]
         });
-        fooIdElem
-            .should.be.eql({
-                model: foo,
-                tname: 'foo',
-                name: 'id',
-                type: { js: 'uuid' },
-                csts: [pKeyCst]
-            });
-        return pKeyCst
-            .should.be.eql({
-                model: foo,
-                tname: 'foo',
-                name: 'foo_pkey',
-                type: CTYPE.PKEY,
-                elems: [fooIdElem]
-            });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'uuid' },
+            csts: [pKeyCst],
+            ...elemDefPrivated,
+            __isPkey: true,
+            __isSingleUniq: true
+        });
+        pKeyCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_pkey',
+            type: CTYPE.PKEY,
+            elems: [fooIdElem]
+        });
+        (() => {
+            fooIdElem.addCst(pKeyCst);
+        }).should.Throw(Error);
+    });
+    it('create Cst with default value', () => {
+        const defValue = 'def_value';
+        let foo = new Model('foo');
+        let fooIdElem = new Elem(foo, {
+            name: 'id',
+            type: {
+                js: 'text'
+            },
+        });
+        let defCst = new Cst(foo, {
+            name: 'foo_id_def',
+            type: CTYPE.DEFAULT,
+            defValue,
+            elems: [fooIdElem]
+        });
+        let pKeyCst = new Cst(foo, {
+            name: 'foo_pkey',
+            type: CTYPE.PKEY,
+            elems: [fooIdElem]
+        });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'text' },
+            csts: [defCst, pKeyCst],
+            ...elemDefPrivated,
+            __isPkey: true,
+            __isSingleUniq: true,
+            __hasDefault: true,
+            __defaultValue: defValue
+        });
+        pKeyCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_pkey',
+            type: CTYPE.PKEY,
+            elems: [fooIdElem],
+        });
+        defCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_id_def',
+            type: CTYPE.DEFAULT,
+            elems: [fooIdElem],
+            __defaultValue: defValue
+        });
+    });
+    it('create Cst with primary key and default value', () => {
+        const defValue = 'def_value';
+        let foo = new Model('foo');
+        let fooIdElem = new Elem(foo, {
+            name: 'id',
+            type: {
+                js: 'text'
+            },
+        });
+        let defCst = new Cst(foo, {
+            name: 'foo_id_def',
+            type: CTYPE.DEFAULT,
+            defValue,
+            elems: [fooIdElem]
+        });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'text' },
+            csts: [defCst],
+            ...elemDefPrivated,
+            __hasDefault: true,
+            __defaultValue: defValue
+        });
+        defCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_id_def',
+            type: CTYPE.DEFAULT,
+            elems: [fooIdElem],
+            __defaultValue: defValue
+        });
+        (() => {
+            fooIdElem.addCst(defCst);
+        }).should.Throw(Error);
+    });
+    it('create Cst with not null', () => {
+        let foo = new Model('foo');
+        let fooIdElem = new Elem(foo, {
+            name: 'id',
+            type: {
+                js: 'text'
+            },
+        });
+        let nnCst = new Cst(foo, {
+            name: 'foo_id_nn',
+            type: CTYPE.NOTNULL,
+            elems: [fooIdElem]
+        });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'text' },
+            csts: [nnCst],
+            ...elemDefPrivated,
+            __isNotNull: true
+        });
+        nnCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_id_nn',
+            type: CTYPE.NOTNULL,
+            elems: [fooIdElem],
+        });
+        (() => {
+            fooIdElem.addCst(nnCst);
+        }).should.Throw(Error);
+    });
+    it('create Cst with single unique constraint', () => {
+        let foo = new Model('foo');
+        let fooIdElem = new Elem(foo, {
+            name: 'id',
+            type: {
+                js: 'text'
+            },
+        });
+        let sukCst = new Cst(foo, {
+            name: 'foo_id_uk',
+            type: CTYPE.UNIQUE,
+            elems: [fooIdElem]
+        });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'text' },
+            csts: [sukCst],
+            ...elemDefPrivated,
+            __isSingleUniq: true
+        });
+        sukCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_id_uk',
+            type: CTYPE.UNIQUE,
+            elems: [fooIdElem],
+        });
+        (() => {
+            fooIdElem.addCst(sukCst);
+        }).should.Throw(Error);
+    });
+    it.skip('create Cst with multiple unique constraint', () => {
+        let foo = new Model('foo');
+        let fooIdElem = new Elem(foo, {
+            name: 'id',
+            type: {
+                js: 'text'
+            },
+        });
+        let fooNoElem = new Elem(foo, {
+            name: 'no',
+            type: {
+                js: 'text'
+            },
+        });
+        let mukCst = new Cst(foo, {
+            name: 'foo_id_no_uk',
+            type: CTYPE.UNIQUE,
+            elems: [fooIdElem, fooNoElem]
+        });
+        fooIdElem.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'id',
+            type: { js: 'text' },
+            csts: [mukCst],
+            ...elemDefPrivated,
+            __isSingleUniq: true
+        });
+        mukCst.should.be.eql({
+            model: foo,
+            tname: 'foo',
+            name: 'foo_id_no_uk',
+            type: CTYPE.UNIQUE,
+            elems: [fooIdElem],
+        });
+        (() => {
+            fooIdElem.addCst(mukCst);
+        }).should.Throw(Error);
+    });
+    it('create Cst with multiple primary key', () => {
     });
 //     it('regsiter foo', (done) => {
 //         mm.register({

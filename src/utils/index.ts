@@ -12,7 +12,9 @@ export const DB_TYPE = {
 
 export function nonEnum(target: any, key: string) {
     Object.defineProperty(target, key, {
-        enumerable: false
+        enumerable: false,
+        configurable: true,
+        writable: true
     });
 }
 

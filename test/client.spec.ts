@@ -4,10 +4,8 @@
 import { PgDbClient, PgDbConfig, SqliteDbClient, SqliteDbConfig } from '../src/dialects';
 import { Zdb } from '../src/zdb';
 import { DB_TYPE } from '../src/utils';
-import * as chai from 'chai';
 import * as _ from 'lodash';
 
-let should = chai.should();
 
 describe('test connection', () => {
     it('postgres', () => {
