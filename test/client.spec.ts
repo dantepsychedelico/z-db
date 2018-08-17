@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 
 describe('test connection', () => {
-    it('postgres', () => {
+    it.skip('postgres', () => {
         let pgDb = new Zdb(PgDbClient, { 
             dbType: DB_TYPE.postgres, 
             config: { host: 'localhost', user: 'postgres', database: 'zdb-test' },
