@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./lib/zorm');
+module.exports = require('./lib/zdbc');

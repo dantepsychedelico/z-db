@@ -2,10 +2,7 @@
 /* process unit test */
 
 import { LazyDep } from '../../src/utils/lazy-dep';
-import * as chai from 'chai';
 import * as _ from 'lodash';
-
-let should = chai.should();
 
 describe('test LazyDep', () => {
     it('test register aa', (done) => {
